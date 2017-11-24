@@ -13,11 +13,13 @@ func TestPublishedTweetIsSaved3(t *testing.T) {
 	user := "meli-team"
 	text := "los de ama-son unos giles"
 
-	tweet = domain.NewTweet(user, test)
+	tweet = domain.NewTweet(user, text)
+
+	service.PublishTweet(tweet)
 
 	publishedTweet := service.GetTweet()
 
-	if publishedTweet.User != user && publishedTweet.Test != text {
+	if publishedTweet.User != user && publishedTweet.Text != text {
 		t.Errorf("Expected tweet is %s: %s \n but is %s: %s",
 			user, text, publishedTweet.User, publishedTweet.Text)
 	}

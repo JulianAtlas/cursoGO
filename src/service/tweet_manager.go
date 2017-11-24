@@ -1,14 +1,15 @@
 package service
 
-//Tweet una variable re loka asd
-var tweet string
+import "github.com/cursoGO/src/domain"
 
-//PublishTweet functionasd
-func PublishTweet(tweetToPublish string) {
-	tweet = tweetToPublish
+var myTweet *domain.Tweet
+
+//PublishTweet publisher
+func PublishTweet(unTweet *domain.Tweet) {
+	myTweet = unTweet
 }
 
-//GetTweet getter de tweet
-func GetTweet() string {
-	return tweet
+//GetTweet getter
+func GetTweet() *domain.Tweet {
+	return myTweet
 }

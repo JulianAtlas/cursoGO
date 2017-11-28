@@ -7,112 +7,91 @@ import (
 	"github.com/cursoGO/src/service"
 )
 
-func TestWithoutTextIsNotPublished(t *testing.T) {
-
-	var tweet *domain.Tweet
-	var user domain.Usuario
-	user.Mail = "mercadolibre.com"
-	user.Username = "meli-team"
-	var text string
-
-	tweet = domain.NewTweet(user, text)
-
-	var err error
-	_, err = service.PublishTweet(tweet)
-
-	if err == nil {
-		t.Error("Expected error")
-		return
-	}
-
-	if err.Error() != "text is required" {
-		t.Error("Expected error is text is required")
-	}
-}
-
-func TestWithMultipleTweets(t *testing.T) {
-	service.InitializeService()
-	var id int
-	var user domain.Usuario
-	user.Mail = "mercadolibre.com"
-	user.Username = "meli-team"
-	text := "Tweet re loko"
-	text2 := "Tweet no tan loko"
-
-	tweet := domain.NewTweet(user, text)
-	tweet2 := domain.NewTweet(user, text2)
-
-	id, _ = service.PublishTweet(tweet)
-	id, _ = service.PublishTweet(tweet2)
-
-	publishedTweets := service.GetTweets()
-	if len(publishedTweets) != 2 {
-		t.Errorf("expected size was 2, but was %d ", len(publishedTweets))
-		return
-	}
-
-	publishedTweet := publishedTweets[0]
-	publishedTweet2 := publishedTweets[1]
-
-	if !isValidTweet(t, publishedTweet, id, user, text) {
-		return
-	}
-
-	if !isValidTweet(t, publishedTweet2, id, user, text) {
-		return
-	}
-}
-
-func isValidTweet(t *testing.T, publishedTweet *domain.Tweet, id int, user domain.Usuario, text string) bool {
-	respuesta := true
-	if publishedTweet == nil && publishedTweet.ID != id && publishedTweet.User != user &&
-		publishedTweet.Text != text {
-		respuesta = false
-	}
-	return respuesta
-}
-
 func TestCanRetriveById(t *testing.T) {
-	service.InitializeService()
+	tm := service.NewTweetManager()
 	var id int
 	var user domain.Usuario
-	user.Mail = "mercadolibre.com"
-	user.Username = "meli-team"
+	user.SetMail("mercadolibre.com")
+	user.SetUsername("meli-team")
 	text := "Tweet re loko"
 	tweet := domain.NewTweet(user, text)
-	id, _ = service.PublishTweet(tweet)
-	publishedTweet := service.GetTweetByID(id)
-	if !isValidTweet(t, publishedTweet, id, user, text) {
-		t.Error("Trajiste un tweet cualca")
+	id, _ = tm.PublishTweet(tweet)
+	publishedTweet := tm.GetTweetByID(id)
+
+	if publishedTweet != tweet {
+		t.Error("los tweets no son iguales")
 	}
 }
 
-func TestSignOnDeUnUsuarioLoAgregaALosRegistrados(t *testing.T) {
-	//var id int
-	var user domain.Usuario
-	user.Mail = "mercadolibre.com"
-	user.Username = "meli-team"
+func TestGetTweets(t *testing.T) {
+	tm := service.NewTweetManager()
+	var tweet1 *domain.Tweet
+	var tweet2 *domain.Tweet
+	var tweet3 *domain.Tweet
 
-	//fmt.Println(len(service.UsuariosRegistrados))
-	service.SignUp(user)
-	//fmt.Println(len(service.UsuariosRegistrados))
-	if service.EstaLogueado(user) != nil {
-		t.Error("el usuario no se logueo")
+	var user1 domain.Usuario
+	var user2 domain.Usuario
+
+	user1.SetMail("mercadolibre.com")
+	user1.SetUsername("meli-team")
+	user2.SetMail("mercadolibre.com")
+	user2.SetUsername("meli-team")
+
+	text1 := "Texto1"
+	text2 := "Texto2"
+	text3 := "Texto3"
+
+	tm.SignUp(user1)
+	tm.SignUp(user2)
+
+	tweet1 = domain.NewTweet(user1, text1)
+	tweet2 = domain.NewTweet(user1, text2)
+	tweet3 = domain.NewTweet(user2, text3)
+
+	tm.PublishTweet(tweet1)
+	tm.PublishTweet(tweet2)
+	tm.PublishTweet(tweet3)
+
+	tweets := tm.GetTweets()
+	if len(tweets) != 3 {
+		t.Error("deberian ser 3")
+	}
+
+}
+
+func TestSingUp(t *testing.T) {
+	tm := service.NewTweetManager()
+	var user domain.Usuario
+	user.SetMail("mercadolibre.com")
+	user.SetUsername("meli-team")
+	tm.SignUp(user)
+
+	if !tm.EstaLogueado(user) {
+		t.Error("deberia estar logeado")
+	}
+
+	if len(tm.GetUsuariosRegistrados()) < 1 {
+		t.Error("deberia haber 1 usuario en la lista de usuarios")
+	}
+
+	if tm.GetUsuariosRegistrados()[0].GetMail() != "mercadolibre.com" {
+		t.Error("Mail incorrecto")
 	}
 }
 
 func TestMap(t *testing.T) {
+	tm := service.NewTweetManager()
 	var user domain.Usuario
-	user.Mail = "mercadolibre.com"
-	user.Username = "meli-team"
+	user.SetMail("mercadolibre.com")
+	user.SetUsername("meli-team")
 
 	text := "Tweet re loko"
 	tweet := domain.NewTweet(user, text)
-	id, _ = service.PublishTweet(tweet)
+	tm.PublishTweet(tweet)
 
 	//test
-	tweetTest := service.tweetsPorUsuario[user.ID]
-	if tweetTest != tweet {
+	tweetTest := tm.GetTweetsPorUsuario()[user.GetID()]
+	if tweetTest[0] != tweet {
 		t.Error("Los tweets no son iguales")
 	}
 }

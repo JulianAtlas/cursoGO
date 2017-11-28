@@ -6,51 +6,78 @@ import (
 	"github.com/cursoGO/src/domain"
 )
 
-//myTweets son todos mis tweets
-//var myTweets []*domain.Tweet
-var tweetsPorUsuario map[int][]*domain.Tweet
+//TweetManager el master de nuestra structura
+type TweetManager struct {
+	tweetsPorUsuario    map[int][]*domain.Tweet
+	cantTweets          int
+	usuariosRegistrados []*domain.Usuario
+}
 
-//usuariosRegistrados todos los usuarios registrados
-var UsuariosRegistrados []*domain.Usuario
+//GetTweetsPorUsuario getter mapa
+func (tm *TweetManager) GetTweetsPorUsuario() map[int][]*domain.Tweet {
+	return tm.tweetsPorUsuario
+}
+
+//GetUsuariosRegistrados getter usuarios registrados
+func (tm *TweetManager) GetUsuariosRegistrados() []*domain.Usuario {
+	return tm.usuariosRegistrados
+}
+
+//NewTweetManager constructor
+func NewTweetManager() *TweetManager {
+	tm := new(TweetManager)
+	tm.tweetsPorUsuario = make(map[int][]*domain.Tweet)
+	return tm
+}
 
 //EstaLogueado consulto si el usuario está logueado
-func EstaLogueado(unUsuario domain.Usuario) error {
-	respuesta := fmt.Errorf("El usuario no existe")
-	for _, user := range UsuariosRegistrados {
+func (tm *TweetManager) EstaLogueado(unUsuario domain.Usuario) bool {
+	respuesta := false
+	for _, user := range tm.usuariosRegistrados {
 		if *user == unUsuario {
-			respuesta = nil
+			respuesta = true
 		}
 	}
 	return respuesta
 }
 
 //SignUp el usuario se crea una cuenta
-func SignUp(unUsuario domain.Usuario) error {
-	var respuesta error
-	respuesta = EstaLogueado(unUsuario)
-	if respuesta != nil {
-		unUsuario.ID = len(UsuariosRegistrados)
-		UsuariosRegistrados = append(UsuariosRegistrados, &unUsuario)
+func (tm *TweetManager) SignUp(unUsuario domain.Usuario) {
+	var respuesta bool
+	respuesta = tm.EstaLogueado(unUsuario)
+
+	if !respuesta {
+		unUsuario.SetID(len(tm.usuariosRegistrados))
+		tm.usuariosRegistrados = append(tm.usuariosRegistrados, &unUsuario)
 	}
-	return nil
 }
 
 //PublishTweet publisher
-func PublishTweet(unTweet *domain.Tweet) (int, error) {
-	if unTweet.User.Username == "" {
+func (tm *TweetManager) PublishTweet(unTweet *domain.Tweet) (int, error) {
+	if unTweet.GetUser().GetUsername() == "" {
 		return 0, fmt.Errorf("User required")
 	}
-	if unTweet.Text == "" {
+	if unTweet.GetText() == "" {
 		return 0, fmt.Errorf("text is required")
 	}
-	unTweet.ID = len(myTweets)
-	myTweets = append(myTweets, unTweet)
-	return unTweet.ID, nil
+
+	unTweet.SetID(tm.cantTweets)
+	tm.cantTweets++
+
+	idUsuario := unTweet.GetUser().GetID()
+	tm.tweetsPorUsuario[idUsuario] = append(tm.tweetsPorUsuario[idUsuario], unTweet)
+	return unTweet.GetID(), nil
 }
 
-//GetTweet getter
-func GetTweets() []*domain.Tweet {
-	return myTweets
+//GetTweets getter
+func (tm *TweetManager) GetTweets() []*domain.Tweet {
+	var allTweets []*domain.Tweet
+	for _, tweetsDeUnUsuario := range tm.tweetsPorUsuario {
+		for _, tweet := range tweetsDeUnUsuario {
+			allTweets = append(allTweets, tweet)
+		}
+	}
+	return allTweets
 }
 
 //InitializeService init service
@@ -59,10 +86,14 @@ func InitializeService() {
 }
 
 //GetTweetByID obtiene un tweet por ID
-func GetTweetByID(id int) *domain.Tweet {
-	for i, tweet := range myTweets {
-		if tweet.ID == id {
-			return myTweets[i]
+func (tm *TweetManager) GetTweetByID(id int) *domain.Tweet {
+
+	for _, tweetsDeUnUsuario := range tm.tweetsPorUsuario {
+		//fmt.Printf("key[%s] value[%s]\n", k, v)
+		for _, tweet := range tweetsDeUnUsuario {
+			if tweet.GetID() == id {
+				return tweet
+			}
 		}
 	}
 	return nil

@@ -95,3 +95,21 @@ func TestMap(t *testing.T) {
 		t.Error("Los tweets no son iguales")
 	}
 }
+
+func TestRemoverTweet(t *testing.T) {
+	tm := service.NewTweetManager()
+	var user domain.Usuario
+	user.SetMail("mercadolibre.com")
+	user.SetUsername("meli-team")
+
+	text := "Tweet re loko"
+	tweet := domain.NewTweet(user, text)
+	id, _ := tm.PublishTweet(tweet)
+	//operation
+	tm.RemoverTweet(id)
+
+	//test
+	if len(tm.GetTweets()) > 0 {
+		t.Error("Hay demasiados Tweets")
+	}
+}

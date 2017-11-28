@@ -30,6 +30,22 @@ func NewTweetManager() *TweetManager {
 	return tm
 }
 
+//RemoverTweet remueve un tweet
+func (tm *TweetManager) RemoverTweet(idTweet int) {
+	for key, tweetsDeUnUsuario := range tm.tweetsPorUsuario {
+		//fmt.Printf("key[%s] value[%s]\n", k, v)
+		for index, tweet := range tweetsDeUnUsuario {
+			if tweet.GetID() == idTweet {
+				tm.removerElemento(index, key)
+			}
+		}
+	}
+}
+
+func (tm *TweetManager) removerElemento(index int, key int) {
+	tm.tweetsPorUsuario[key] = append(tm.tweetsPorUsuario[key][:index], tm.tweetsPorUsuario[key][index+1:]...)
+}
+
 //EstaLogueado consulto si el usuario está logueado
 func (tm *TweetManager) EstaLogueado(unUsuario domain.Usuario) bool {
 	respuesta := false

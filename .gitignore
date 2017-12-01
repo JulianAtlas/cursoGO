@@ -1,2 +1,3 @@
 .vscode/
 src/service/debug.test
+.DS_Store

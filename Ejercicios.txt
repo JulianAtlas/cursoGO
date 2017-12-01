@@ -1,27 +1,18 @@
-﻿Registrar usuario
-Dar de alta un usuario con nombre, mail, nick y contraseña
+﻿(Listo) Registrar usuario: Dar de alta un usuario con nombre, mail, nick y contraseña
 
+(Listo) Sólo pueden tweetear los usuarios registrados
 
-Sólo pueden tweetear los usuarios registrados
+(Listo) Login: Con mail y contraseña o con nick y contraseña. Puede haber más  de un usuario logueado.
 
+(Listo) Sólo pueden tweetear los usuarios logueados
 
-Login
-Con mail y contraseña o con nick y contraseña. Puede haber más  de un usuario logueado.
+(Listo) Logout
 
+(Listo) Borrar un tweet
 
-Sólo pueden tweetear los usuarios logueados
+(Listo) Editar un tweet
 
-
-Logout
-
-
-Borrar un tweet
-
-
-Editar un tweet
-
-
-No permitir tweets duplicados
+(Listo) No permitir tweets duplicados
 
 
 Seguir usuario

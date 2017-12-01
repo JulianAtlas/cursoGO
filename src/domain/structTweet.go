@@ -7,13 +7,13 @@ import (
 //Tweet struct tweet
 type Tweet struct {
 	text string
-	user Usuario
+	user *Usuario
 	date *Datestruct
 	id   int
 }
 
 //NewTweet un nuevo tweet
-func NewTweet(user Usuario, text string) *Tweet {
+func NewTweet(user *Usuario, text string) *Tweet {
 	myTweet := new(Tweet)
 	myTweet.text = text
 	myTweet.user = user
@@ -37,7 +37,7 @@ func (tw *Tweet) GetID() int {
 
 //GetUser getter user
 func (tw *Tweet) GetUser() *Usuario {
-	return &tw.user
+	return tw.user
 }
 
 //SetID setter id

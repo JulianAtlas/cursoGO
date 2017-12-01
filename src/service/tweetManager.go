@@ -20,6 +20,11 @@ func (tm *TweetManager) GetTweetsPorUsuario() map[int][]*domain.Tweet {
 	return tm.tweetsPorUsuario
 }
 
+//GetTweetsFromUser me devuelve todos los tweets de un usuario
+func (tm *TweetManager) GetTweetsFromUser(user *domain.Usuario) []*domain.Tweet {
+	return tm.tweetsPorUsuario[user.GetID()]
+}
+
 //GetUsuariosRegistrados getter usuarios registrados
 func (tm *TweetManager) GetUsuariosRegistrados() []*domain.Usuario {
 	return tm.usuariosRegistrados
@@ -147,11 +152,6 @@ func (tm *TweetManager) GetTweets() []*domain.Tweet {
 	return allTweets
 }
 
-//InitializeService init service
-func InitializeService() {
-	return
-}
-
 //GetTweetByID obtiene un tweet por ID
 func (tm *TweetManager) GetTweetByID(id int) (*domain.Tweet, error) {
 
@@ -186,4 +186,54 @@ func (tm *TweetManager) SeguirUsuario(usuarioQueSigue *domain.Usuario, usuarioSe
 	usuarioQueSigue.AddSeguidos(usuarioSeguido)
 	usuarioSeguido.AddSeguidor(usuarioQueSigue)
 	return nil
+}
+
+//Timeline me devuelve todos los tweets de el user mas todos los tweets de los que el sigue
+func (tm *TweetManager) Timeline(user *domain.Usuario) ([]*domain.Tweet, error) {
+	var timeline []*domain.Tweet
+	if !tm.EstaLogueado(user) {
+		return timeline, errors.New("El usuario no esta logueado")
+	}
+	timeline = append(timeline, tm.GetTweetsFromUser(user)...)
+	for _, us := range user.GetSeguidos() {
+		timeline = append(timeline, tm.GetTweetsFromUser(us)...)
+	}
+	return timeline, nil
+}
+
+//Retweet agrego el tweet a los tweets del user
+func (tm *TweetManager) Retweet(user *domain.Usuario, id int) error {
+	if !tm.EstaLogueado(user) {
+		return errors.New("El usuario no esta logueado")
+	}
+	tweet, err := tm.GetTweetByID(id)
+	if err != nil {
+		return errors.New("El tweet no existe")
+	}
+	idUsuario := user.GetID()
+	tm.tweetsPorUsuario[idUsuario] = append(tm.tweetsPorUsuario[idUsuario], tweet)
+	return nil
+}
+
+//AgregarAFavoritos agrego un tweet a los favoritos de un usuario
+func (tm *TweetManager) AgregarAFavoritos(user *domain.Usuario, id int) error {
+	if !tm.EstaLogueado(user) {
+		return errors.New("El usuario no esta logueado")
+	}
+	tweet, err := tm.GetTweetByID(id)
+	if err != nil {
+		return errors.New("El tweet no existe")
+	}
+	user.AddFavoritos(tweet)
+	return nil
+}
+
+//DameFavoritos me da todos los favoritos de un usuario
+func (tm *TweetManager) DameFavoritos(user *domain.Usuario) ([]*domain.Tweet, error) {
+	var favoritos []*domain.Tweet
+	if !tm.EstaLogueado(user) {
+		return favoritos, errors.New("El usuario no esta logueado")
+	}
+	favoritos = user.GetFavoritos()
+	return favoritos, nil
 }

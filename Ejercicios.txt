@@ -1,0 +1,71 @@
+﻿Registrar usuario
+Dar de alta un usuario con nombre, mail, nick y contraseña
+
+
+Sólo pueden tweetear los usuarios registrados
+
+
+Login
+Con mail y contraseña o con nick y contraseña. Puede haber más  de un usuario logueado.
+
+
+Sólo pueden tweetear los usuarios logueados
+
+
+Logout
+
+
+Borrar un tweet
+
+
+Editar un tweet
+
+
+No permitir tweets duplicados
+
+
+Seguir usuario
+
+
+Timeline del usuario
+Debe mostrar los tweets escritos por el usuario y los escritos por los usuarios que sigue
+
+
+Retweet
+Agrega a la lista de tweets de un usuario un tweet de otro usuario
+
+
+Fav
+Marcar un tweet como favorito
+
+
+Listar favoritos
+Obtiene todos los tweets favoritos de un usuario
+
+
+Enviar un mensaje directo
+No tiene restricción de caracteres, sólo lo pueden ver el emisor y receptor, un DM está “no leído” hasta que el receptor lo lee
+
+
+Leer mensaje directo
+Marca un DM como leído
+
+
+Hashtags
+Los tweets pueden usar uno o más HT (empiezan con #), listar todos los tweets con un HT dado
+
+
+Trend topics
+Listar las 10 palabras/HT más usadas entre todos los tweets
+
+
+Trend topic (frases)
+Listar las 10 frases (entre 2 y 4 palabras) más usadas entre todos los tweets
+
+
+Tweet con encuesta
+Una encuesta de un tweet puede tener hasta 4 opciones y una fecha de finalización; después de finalizada ya no se puede votar
+
+
+Plugins
+Se debe poder agregar plugins al TweetManager, cada vez que se realizan determinadas acciones el manager notifica a todos los plugins

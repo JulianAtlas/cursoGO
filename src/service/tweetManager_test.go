@@ -7,6 +7,77 @@ import (
 	"github.com/cursoGO/src/service"
 )
 
+func TestSignUp(t *testing.T) {
+	tm := service.NewTweetManager()
+	var user domain.Usuario
+	user.SetMail("mercadolibre.com")
+	user.SetUsername("meli-team")
+
+	tm.SignUp(&user)
+
+	if !tm.EstaRegistrado(&user) {
+		t.Error("deberia estar registrado")
+	}
+
+	if len(tm.GetUsuariosRegistrados()) != 1 {
+		t.Error("deberia haber 1 usuario en la lista de usuarios")
+	}
+}
+func TestLogIn(t *testing.T) {
+	tm := service.NewTweetManager()
+	var user domain.Usuario
+	user.SetMail("mercadolibre.com")
+	user.SetUsername("meli-team")
+	tm.SignUp(&user)
+	tm.LogIn(&user)
+
+	if !tm.EstaLogueado(&user) {
+		t.Error("Deberia estar logueado")
+	}
+}
+
+func TestLogOut(t *testing.T) {
+	tm := service.NewTweetManager()
+	var user domain.Usuario
+	user.SetMail("mercadolibre.com")
+	user.SetUsername("meli-team")
+	tm.SignUp(&user)
+	tm.LogIn(&user)
+	tm.LogOut(&user)
+
+	if tm.EstaLogueado(&user) {
+		t.Error("Debería no estar logueado")
+	}
+}
+
+func TestParaPoderTweetearElUsuarioDebeEstarRegistradoAntes(t *testing.T) {
+	tm := service.NewTweetManager()
+	var user domain.Usuario
+	user.SetMail("mercadolibre.com")
+	user.SetUsername("meli-team")
+
+	text := "Tweet re loko"
+	tweet := domain.NewTweet(user, text)
+	if _, err := tm.PublishTweet(tweet); err == nil {
+		t.Error("El usuario debería estar registrado")
+	}
+}
+
+func TestParaPoderTweetearElUsuarioDebeEstarLogueadoAntes(t *testing.T) {
+	tm := service.NewTweetManager()
+	var user domain.Usuario
+	user.SetMail("mercadolibre.com")
+	user.SetUsername("meli-team")
+
+	text := "Tweet re loko"
+	tweet := domain.NewTweet(user, text)
+	tm.SignUp(&user)
+	if _, err := tm.PublishTweet(tweet); err == nil {
+		t.Error("El usuario deberia estar logueado")
+	}
+
+}
+
 func TestCanRetriveById(t *testing.T) {
 	tm := service.NewTweetManager()
 	var id int
@@ -64,23 +135,6 @@ func TestGetTweets(t *testing.T) {
 
 }
 
-func TestSignUp(t *testing.T) {
-	tm := service.NewTweetManager()
-	var user domain.Usuario
-	user.SetMail("mercadolibre.com")
-	user.SetUsername("meli-team")
-
-	tm.SignUp(&user)
-
-	if !tm.EstaRegistrado(&user) {
-		t.Error("deberia estar registrado")
-	}
-
-	if len(tm.GetUsuariosRegistrados()) != 1 {
-		t.Error("deberia haber 1 usuario en la lista de usuarios")
-	}
-}
-
 func TestMap(t *testing.T) {
 	tm := service.NewTweetManager()
 	var user domain.Usuario
@@ -109,58 +163,20 @@ func TestRemoverTweet(t *testing.T) {
 
 	text := "Tweet re loko"
 	tweet := domain.NewTweet(user, text)
+	tm.SignUp(&user)
+	tm.LogIn(&user)
 	id, _ := tm.PublishTweet(tweet)
 
 	//operation
 	tm.RemoverTweet(id)
 
 	//test
-	if len(tm.GetTweets()) > 0 {
+	if len(tm.GetTweets()) != 0 {
 		t.Error("Hay demasiados Tweets")
 	}
 }
 
-func TestLogIn(t *testing.T) {
-	tm := service.NewTweetManager()
-	var user domain.Usuario
-	user.SetMail("mercadolibre.com")
-	user.SetUsername("meli-team")
-	tm.SignUp(&user)
-	tm.LogIn(&user)
-
-	if !tm.EstaLogueado(&user) {
-		t.Error("Deberia estar logueado")
-	}
-}
-
-func TestLogOut(t *testing.T) {
-	tm := service.NewTweetManager()
-	var user domain.Usuario
-	user.SetMail("mercadolibre.com")
-	user.SetUsername("meli-team")
-	tm.SignUp(&user)
-	tm.LogIn(&user)
-	tm.LogOut(&user)
-
-	if tm.EstaLogueado(&user) {
-		t.Error("Debería no estar logueado")
-	}
-}
-
-func TestParaPoderTweetearElUsuarioDebeEstarRegistradoAntes(t *testing.T) {
-	tm := service.NewTweetManager()
-	var user domain.Usuario
-	user.SetMail("mercadolibre.com")
-	user.SetUsername("meli-team")
-
-	text := "Tweet re loko"
-	tweet := domain.NewTweet(user, text)
-	if _, err := tm.PublishTweet(tweet); err == nil {
-		t.Error("El usuario debería estar registrado")
-	}
-}
-
-func TestParaPoderTweetearElUsuarioDebeEstarLogueadoAntes(t *testing.T) {
+func TestEditarUnTweet(t *testing.T) {
 	tm := service.NewTweetManager()
 	var user domain.Usuario
 	user.SetMail("mercadolibre.com")
@@ -169,8 +185,30 @@ func TestParaPoderTweetearElUsuarioDebeEstarLogueadoAntes(t *testing.T) {
 	text := "Tweet re loko"
 	tweet := domain.NewTweet(user, text)
 	tm.SignUp(&user)
-	if _, err := tm.PublishTweet(tweet); err == nil {
-		t.Error("El usuario deberia estar logueado")
-	}
+	tm.LogIn(&user)
+	id, _ := tm.PublishTweet(tweet)
 
+	nuevo_texto := "Tweet modificado"
+	tm.EditarTweet(id, nuevo_texto)
+
+	if twt, _ := tm.GetTweetByID(id); twt.GetText() != nuevo_texto {
+		t.Error("No se modifico el texto del tweet")
+	}
+}
+
+func TestNoPermitoTweetsDuplicados(t *testing.T) {
+	tm := service.NewTweetManager()
+	var user domain.Usuario
+	user.SetMail("mercadolibre.com")
+	user.SetUsername("meli-team")
+
+	text := "Tweet re loko"
+	tweet := domain.NewTweet(user, text)
+	tm.SignUp(&user)
+	tm.LogIn(&user)
+	tm.PublishTweet(tweet)
+
+	if _, err := tm.PublishTweet(tweet); err == nil {
+		t.Error("El tweet no se debería haber agregado")
+	}
 }

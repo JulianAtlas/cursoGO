@@ -44,3 +44,8 @@ func (tw *Tweet) GetUser() *Usuario {
 func (tw *Tweet) SetID(id int) {
 	tw.id = id
 }
+
+//SetText setter de text
+func (tw *Tweet) SetText(nuevoTexto string) {
+	tw.text = nuevoTexto
+}

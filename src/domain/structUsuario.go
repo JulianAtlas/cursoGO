@@ -8,9 +8,11 @@ var Username string
 
 //Usuario mi usuario tiene mail y nombre
 type Usuario struct {
-	id       int
-	mail     string
-	username string
+	id         int
+	mail       string
+	username   string
+	seguidos   []*Usuario
+	seguidores []*Usuario
 }
 
 //GetID getter id
@@ -26,6 +28,26 @@ func (us *Usuario) GetMail() string {
 //GetUsername getter username
 func (us *Usuario) GetUsername() string {
 	return us.username
+}
+
+//GetSeguidos usuario que sigo
+func (us *Usuario) GetSeguidos() []*Usuario {
+	return us.seguidos
+}
+
+//GetSeguidores usuarios que me siguen
+func (us *Usuario) GetSeguidores() []*Usuario {
+	return us.seguidores
+}
+
+//AddSeguidos agrego un usuario que comienzo a seguir
+func (us *Usuario) AddSeguidos(user *Usuario) {
+	us.seguidos = append(us.seguidos, user)
+}
+
+//AddSeguidor agrego al usuario a mis seguidores
+func (us *Usuario) AddSeguidor(user *Usuario) {
+	us.seguidores = append(us.seguidores, user)
 }
 
 //SetID setter id

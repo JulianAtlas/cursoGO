@@ -212,3 +212,27 @@ func TestNoPermitoTweetsDuplicados(t *testing.T) {
 		t.Error("El tweet no se debería haber agregado")
 	}
 }
+
+func TestSeguirUsuario(t *testing.T) {
+	tm := service.NewTweetManager()
+	var user domain.Usuario
+	user.SetMail("mercadolibre.com")
+	user.SetUsername("meli-team")
+	tm.SignUp(&user)
+	tm.LogIn(&user)
+
+	var user_que_sigue domain.Usuario
+	user_que_sigue.SetMail("gmail.com")
+	user_que_sigue.SetUsername("meli")
+	tm.SignUp(&user_que_sigue)
+	tm.LogIn(&user_que_sigue)
+
+	tm.SeguirUsuario(&user_que_sigue, &user)
+
+	if len(user_que_sigue.GetSeguidos()) != 1 {
+		t.Error("Debería seguir a un user")
+	}
+	if len(user.GetSeguidores()) != 1 {
+		t.Error("Debería seguirme un user")
+	}
+}

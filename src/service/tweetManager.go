@@ -34,13 +34,13 @@ func NewTweetManager() *TweetManager {
 
 //EstaRegistrado consulto si el usuario está logueado
 func (tm *TweetManager) EstaRegistrado(unUsuario *domain.Usuario) bool {
-	isLogued := false
+	isRegistered := false
 	for _, user := range tm.usuariosRegistrados {
 		if user == unUsuario {
-			isLogued = true
+			isRegistered = true
 		}
 	}
-	return isLogued
+	return isRegistered
 }
 
 //SignUp el usuario se crea una cuenta
@@ -172,5 +172,18 @@ func (tm *TweetManager) EditarTweet(id int, nuevoTexto string) error {
 		return errors.New("El tweet no exite")
 	}
 	tweet.SetText(nuevoTexto)
+	return nil
+}
+
+//SeguirUsuario comienzo a seguir a un usuario
+func (tm *TweetManager) SeguirUsuario(usuarioQueSigue *domain.Usuario, usuarioSeguido *domain.Usuario) error {
+	if !tm.EstaRegistrado(usuarioQueSigue) {
+		return errors.New("El primer usuario no existe")
+	}
+	if !tm.EstaRegistrado(usuarioSeguido) {
+		return errors.New("El segundo usuario no existe")
+	}
+	usuarioQueSigue.AddSeguidos(usuarioSeguido)
+	usuarioSeguido.AddSeguidor(usuarioQueSigue)
 	return nil
 }

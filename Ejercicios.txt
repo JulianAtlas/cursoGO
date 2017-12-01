@@ -14,8 +14,7 @@
 
 (Listo) No permitir tweets duplicados
 
-
-Seguir usuario
+(Listo) Seguir usuario
 
 
 Timeline del usuario

@@ -5,7 +5,7 @@ import (
 )
 
 //Tweet struct tweet
-type Tweet struct {
+type TextTweet struct {
 	text string
 	user Usuario
 	date *Datestruct
@@ -13,8 +13,8 @@ type Tweet struct {
 }
 
 //NewTweet un nuevo tweet
-func NewTweet(user Usuario, text string) *Tweet {
-	myTweet := new(Tweet)
+func NewTextTweet(user Usuario, text string) *TextTweet {
+	myTweet := new(TextTweet)
 	myTweet.text = text
 	myTweet.user = user
 	fecha := time.Now()
@@ -26,26 +26,26 @@ func NewTweet(user Usuario, text string) *Tweet {
 }
 
 //GetText getter text
-func (tw *Tweet) GetText() string {
+func (tw *TextTweet) GetText() string {
 	return tw.text
 }
 
 //GetID getter id
-func (tw *Tweet) GetID() int {
+func (tw *TextTweet) GetID() int {
 	return tw.id
 }
 
 //GetUser getter user
-func (tw *Tweet) GetUser() *Usuario {
+func (tw *TextTweet) GetUser() *Usuario {
 	return &tw.user
 }
 
 //SetID setter id
-func (tw *Tweet) SetID(id int) {
+func (tw *TextTweet) SetID(id int) {
 	tw.id = id
 }
 
 //SetText setter de text
-func (tw *Tweet) SetText(nuevoTexto string) {
+func (tw *TextTweet) SetText(nuevoTexto string) {
 	tw.text = nuevoTexto
 }

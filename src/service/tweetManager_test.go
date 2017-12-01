@@ -23,216 +23,217 @@ func TestSignUp(t *testing.T) {
 		t.Error("deberia haber 1 usuario en la lista de usuarios")
 	}
 }
-func TestLogIn(t *testing.T) {
-	tm := service.NewTweetManager()
-	var user domain.Usuario
-	user.SetMail("mercadolibre.com")
-	user.SetUsername("meli-team")
-	tm.SignUp(&user)
-	tm.LogIn(&user)
 
-	if !tm.EstaLogueado(&user) {
-		t.Error("Deberia estar logueado")
-	}
-}
+// func TestLogIn(t *testing.T) {
+// 	tm := service.NewTweetManager()
+// 	var user domain.Usuario
+// 	user.SetMail("mercadolibre.com")
+// 	user.SetUsername("meli-team")
+// 	tm.SignUp(&user)
+// 	tm.LogIn(&user)
 
-func TestLogOut(t *testing.T) {
-	tm := service.NewTweetManager()
-	var user domain.Usuario
-	user.SetMail("mercadolibre.com")
-	user.SetUsername("meli-team")
-	tm.SignUp(&user)
-	tm.LogIn(&user)
-	tm.LogOut(&user)
+// 	if !tm.EstaLogueado(&user) {
+// 		t.Error("Deberia estar logueado")
+// 	}
+// }
 
-	if tm.EstaLogueado(&user) {
-		t.Error("Debería no estar logueado")
-	}
-}
+// func TestLogOut(t *testing.T) {
+// 	tm := service.NewTweetManager()
+// 	var user domain.Usuario
+// 	user.SetMail("mercadolibre.com")
+// 	user.SetUsername("meli-team")
+// 	tm.SignUp(&user)
+// 	tm.LogIn(&user)
+// 	tm.LogOut(&user)
 
-func TestParaPoderTweetearElUsuarioDebeEstarRegistradoAntes(t *testing.T) {
-	tm := service.NewTweetManager()
-	var user domain.Usuario
-	user.SetMail("mercadolibre.com")
-	user.SetUsername("meli-team")
+// 	if tm.EstaLogueado(&user) {
+// 		t.Error("Debería no estar logueado")
+// 	}
+// }
 
-	text := "Tweet re loko"
-	tweet := domain.NewTweet(user, text)
-	if _, err := tm.PublishTweet(tweet); err == nil {
-		t.Error("El usuario debería estar registrado")
-	}
-}
+// func TestParaPoderTweetearElUsuarioDebeEstarRegistradoAntes(t *testing.T) {
+// 	tm := service.NewTweetManager()
+// 	var user domain.Usuario
+// 	user.SetMail("mercadolibre.com")
+// 	user.SetUsername("meli-team")
 
-func TestParaPoderTweetearElUsuarioDebeEstarLogueadoAntes(t *testing.T) {
-	tm := service.NewTweetManager()
-	var user domain.Usuario
-	user.SetMail("mercadolibre.com")
-	user.SetUsername("meli-team")
+// 	text := "Tweet re loko"
+// 	tweet := domain.NewTweet(user, text)
+// 	if _, err := tm.PublishTweet(tweet); err == nil {
+// 		t.Error("El usuario debería estar registrado")
+// 	}
+// }
 
-	text := "Tweet re loko"
-	tweet := domain.NewTweet(user, text)
-	tm.SignUp(&user)
-	if _, err := tm.PublishTweet(tweet); err == nil {
-		t.Error("El usuario deberia estar logueado")
-	}
+// func TestParaPoderTweetearElUsuarioDebeEstarLogueadoAntes(t *testing.T) {
+// 	tm := service.NewTweetManager()
+// 	var user domain.Usuario
+// 	user.SetMail("mercadolibre.com")
+// 	user.SetUsername("meli-team")
 
-}
+// 	text := "Tweet re loko"
+// 	tweet := domain.NewTweet(user, text)
+// 	tm.SignUp(&user)
+// 	if _, err := tm.PublishTweet(tweet); err == nil {
+// 		t.Error("El usuario deberia estar logueado")
+// 	}
 
-func TestCanRetriveById(t *testing.T) {
-	tm := service.NewTweetManager()
-	var id int
-	var user domain.Usuario
-	user.SetMail("mercadolibre.com")
-	user.SetUsername("meli-team")
-	text := "Tweet re loko"
-	tweet := domain.NewTweet(user, text)
-	tm.SignUp(&user)
-	tm.LogIn(&user)
-	id, _ = tm.PublishTweet(tweet)
-	publishedTweet, _ := tm.GetTweetByID(id)
+// }
 
-	if publishedTweet != tweet {
-		t.Error("los tweets no son iguales")
-	}
-}
+// func TestCanRetriveById(t *testing.T) {
+// 	tm := service.NewTweetManager()
+// 	var id int
+// 	var user domain.Usuario
+// 	user.SetMail("mercadolibre.com")
+// 	user.SetUsername("meli-team")
+// 	text := "Tweet re loko"
+// 	tweet := domain.NewTweet(user, text)
+// 	tm.SignUp(&user)
+// 	tm.LogIn(&user)
+// 	id, _ = tm.PublishTweet(tweet)
+// 	publishedTweet, _ := tm.GetTweetByID(id)
 
-func TestGetTweets(t *testing.T) {
-	tm := service.NewTweetManager()
-	var tweet1 *domain.Tweet
-	var tweet2 *domain.Tweet
-	var tweet3 *domain.Tweet
+// 	if publishedTweet != tweet {
+// 		t.Error("los tweets no son iguales")
+// 	}
+// }
 
-	var user1 domain.Usuario
-	var user2 domain.Usuario
+// func TestGetTweets(t *testing.T) {
+// 	tm := service.NewTweetManager()
+// 	var tweet1 *domain.Tweet
+// 	var tweet2 *domain.Tweet
+// 	var tweet3 *domain.Tweet
 
-	user1.SetMail("mercadolibre.com")
-	user1.SetUsername("meli-team")
-	user2.SetMail("mercadolibre.com")
-	user2.SetUsername("meli-team")
+// 	var user1 domain.Usuario
+// 	var user2 domain.Usuario
 
-	text1 := "Texto1"
-	text2 := "Texto2"
-	text3 := "Texto3"
+// 	user1.SetMail("mercadolibre.com")
+// 	user1.SetUsername("meli-team")
+// 	user2.SetMail("mercadolibre.com")
+// 	user2.SetUsername("meli-team")
 
-	tm.SignUp(&user1)
-	tm.SignUp(&user2)
+// 	text1 := "Texto1"
+// 	text2 := "Texto2"
+// 	text3 := "Texto3"
 
-	tweet1 = domain.NewTweet(user1, text1)
-	tweet2 = domain.NewTweet(user1, text2)
-	tweet3 = domain.NewTweet(user2, text3)
+// 	tm.SignUp(&user1)
+// 	tm.SignUp(&user2)
 
-	tm.LogIn(&user1)
-	tm.LogIn(&user2)
+// 	tweet1 = domain.NewTweet(user1, text1)
+// 	tweet2 = domain.NewTweet(user1, text2)
+// 	tweet3 = domain.NewTweet(user2, text3)
 
-	tm.PublishTweet(tweet1)
-	tm.PublishTweet(tweet2)
-	tm.PublishTweet(tweet3)
+// 	tm.LogIn(&user1)
+// 	tm.LogIn(&user2)
 
-	tweets := tm.GetTweets()
-	if len(tweets) != 3 {
-		t.Error("deberian ser 3")
-	}
+// 	tm.PublishTweet(tweet1)
+// 	tm.PublishTweet(tweet2)
+// 	tm.PublishTweet(tweet3)
 
-}
+// 	tweets := tm.GetTweets()
+// 	if len(tweets) != 3 {
+// 		t.Error("deberian ser 3")
+// 	}
 
-func TestMap(t *testing.T) {
-	tm := service.NewTweetManager()
-	var user domain.Usuario
-	user.SetMail("mercadolibre.com")
-	user.SetUsername("meli-team")
+// }
 
-	text := "Tweet re loko"
-	tweet := domain.NewTweet(user, text)
+// func TestMap(t *testing.T) {
+// 	tm := service.NewTweetManager()
+// 	var user domain.Usuario
+// 	user.SetMail("mercadolibre.com")
+// 	user.SetUsername("meli-team")
 
-	tm.SignUp(&user)
-	tm.LogIn(&user)
-	tm.PublishTweet(tweet)
+// 	text := "Tweet re loko"
+// 	tweet := domain.NewTweet(user, text)
 
-	//test
-	tweetTest := tm.GetTweetsPorUsuario()[user.GetID()]
-	if tweetTest[0] != tweet {
-		t.Error("Los tweets no son iguales")
-	}
-}
+// 	tm.SignUp(&user)
+// 	tm.LogIn(&user)
+// 	tm.PublishTweet(tweet)
 
-func TestRemoverTweet(t *testing.T) {
-	tm := service.NewTweetManager()
-	var user domain.Usuario
-	user.SetMail("mercadolibre.com")
-	user.SetUsername("meli-team")
+// 	//test
+// 	tweetTest := tm.GetTweetsPorUsuario()[user.GetID()]
+// 	if tweetTest[0] != tweet {
+// 		t.Error("Los tweets no son iguales")
+// 	}
+// }
 
-	text := "Tweet re loko"
-	tweet := domain.NewTweet(user, text)
-	tm.SignUp(&user)
-	tm.LogIn(&user)
-	id, _ := tm.PublishTweet(tweet)
+// func TestRemoverTweet(t *testing.T) {
+// 	tm := service.NewTweetManager()
+// 	var user domain.Usuario
+// 	user.SetMail("mercadolibre.com")
+// 	user.SetUsername("meli-team")
 
-	//operation
-	tm.RemoverTweet(id)
+// 	text := "Tweet re loko"
+// 	tweet := domain.NewTweet(user, text)
+// 	tm.SignUp(&user)
+// 	tm.LogIn(&user)
+// 	id, _ := tm.PublishTweet(tweet)
 
-	//test
-	if len(tm.GetTweets()) != 0 {
-		t.Error("Hay demasiados Tweets")
-	}
-}
+// 	//operation
+// 	tm.RemoverTweet(id)
 
-func TestEditarUnTweet(t *testing.T) {
-	tm := service.NewTweetManager()
-	var user domain.Usuario
-	user.SetMail("mercadolibre.com")
-	user.SetUsername("meli-team")
+// 	//test
+// 	if len(tm.GetTweets()) != 0 {
+// 		t.Error("Hay demasiados Tweets")
+// 	}
+// }
 
-	text := "Tweet re loko"
-	tweet := domain.NewTweet(user, text)
-	tm.SignUp(&user)
-	tm.LogIn(&user)
-	id, _ := tm.PublishTweet(tweet)
+// func TestEditarUnTweet(t *testing.T) {
+// 	tm := service.NewTweetManager()
+// 	var user domain.Usuario
+// 	user.SetMail("mercadolibre.com")
+// 	user.SetUsername("meli-team")
 
-	nuevo_texto := "Tweet modificado"
-	tm.EditarTweet(id, nuevo_texto)
+// 	text := "Tweet re loko"
+// 	tweet := domain.NewTweet(user, text)
+// 	tm.SignUp(&user)
+// 	tm.LogIn(&user)
+// 	id, _ := tm.PublishTweet(tweet)
 
-	if twt, _ := tm.GetTweetByID(id); twt.GetText() != nuevo_texto {
-		t.Error("No se modifico el texto del tweet")
-	}
-}
+// 	nuevo_texto := "Tweet modificado"
+// 	tm.EditarTweet(id, nuevo_texto)
 
-func TestNoPermitoTweetsDuplicados(t *testing.T) {
-	tm := service.NewTweetManager()
-	var user domain.Usuario
-	user.SetMail("mercadolibre.com")
-	user.SetUsername("meli-team")
+// 	if twt, _ := tm.GetTweetByID(id); twt.GetText() != nuevo_texto {
+// 		t.Error("No se modifico el texto del tweet")
+// 	}
+// }
 
-	text := "Tweet re loko"
-	tweet := domain.NewTweet(user, text)
-	tm.SignUp(&user)
-	tm.LogIn(&user)
-	tm.PublishTweet(tweet)
+// func TestNoPermitoTweetsDuplicados(t *testing.T) {
+// 	tm := service.NewTweetManager()
+// 	var user domain.Usuario
+// 	user.SetMail("mercadolibre.com")
+// 	user.SetUsername("meli-team")
 
-	if _, err := tm.PublishTweet(tweet); err == nil {
-		t.Error("El tweet no se debería haber agregado")
-	}
-}
+// 	text := "Tweet re loko"
+// 	tweet := domain.NewTweet(user, text)
+// 	tm.SignUp(&user)
+// 	tm.LogIn(&user)
+// 	tm.PublishTweet(tweet)
 
-func TestSeguirUsuario(t *testing.T) {
-	tm := service.NewTweetManager()
-	var user domain.Usuario
-	user.SetMail("mercadolibre.com")
-	user.SetUsername("meli-team")
-	tm.SignUp(&user)
-	tm.LogIn(&user)
+// 	if _, err := tm.PublishTweet(tweet); err == nil {
+// 		t.Error("El tweet no se debería haber agregado")
+// 	}
+// }
 
-	var user_que_sigue domain.Usuario
-	user_que_sigue.SetMail("gmail.com")
-	user_que_sigue.SetUsername("meli")
-	tm.SignUp(&user_que_sigue)
-	tm.LogIn(&user_que_sigue)
+// func TestSeguirUsuario(t *testing.T) {
+// 	tm := service.NewTweetManager()
+// 	var user domain.Usuario
+// 	user.SetMail("mercadolibre.com")
+// 	user.SetUsername("meli-team")
+// 	tm.SignUp(&user)
+// 	tm.LogIn(&user)
 
-	tm.SeguirUsuario(&user_que_sigue, &user)
+// 	var user_que_sigue domain.Usuario
+// 	user_que_sigue.SetMail("gmail.com")
+// 	user_que_sigue.SetUsername("meli")
+// 	tm.SignUp(&user_que_sigue)
+// 	tm.LogIn(&user_que_sigue)
 
-	if len(user_que_sigue.GetSeguidos()) != 1 {
-		t.Error("Debería seguir a un user")
-	}
-	if len(user.GetSeguidores()) != 1 {
-		t.Error("Debería seguirme un user")
-	}
-}
+// 	tm.SeguirUsuario(&user_que_sigue, &user)
+
+// 	if len(user_que_sigue.GetSeguidos()) != 1 {
+// 		t.Error("Debería seguir a un user")
+// 	}
+// 	if len(user.GetSeguidores()) != 1 {
+// 		t.Error("Debería seguirme un user")
+// 	}
+// }

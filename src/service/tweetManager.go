@@ -1,21 +1,24 @@
 package service
 
 import (
+	"errors"
+	"fmt"
+
 	"github.com/cursoGO/src/domain"
 )
 
 //TweetManager el master de nuestra structura
 type TweetManager struct {
-	tweetsPorUsuario    map[int][]*domain.Tweet
+	tweetsPorUsuario    map[int][]domain.Tweet
 	cantTweets          int
 	usuariosRegistrados []*domain.Usuario
 	usuariosLogueados   []*domain.Usuario
 }
 
-// //GetTweetsPorUsuario getter mapa
-// func (tm *TweetManager) GetTweetsPorUsuario() map[int][]*domain.Tweet {
-// 	return tm.tweetsPorUsuario
-// }
+//GetTweetsPorUsuario getter mapa
+func (tm *TweetManager) GetTweetsPorUsuario() map[int][]domain.Tweet {
+	return tm.tweetsPorUsuario
+}
 
 //GetUsuariosRegistrados getter usuarios registrados
 func (tm *TweetManager) GetUsuariosRegistrados() []*domain.Usuario {
@@ -25,7 +28,7 @@ func (tm *TweetManager) GetUsuariosRegistrados() []*domain.Usuario {
 //NewTweetManager constructor
 func NewTweetManager() *TweetManager {
 	tm := new(TweetManager)
-	tm.tweetsPorUsuario = make(map[int][]*domain.Tweet)
+	tm.tweetsPorUsuario = make(map[int][]domain.Tweet)
 	return tm
 }
 
@@ -49,39 +52,39 @@ func (tm *TweetManager) SignUp(unUsuario *domain.Usuario) {
 	tm.usuariosRegistrados = append(tm.usuariosRegistrados, unUsuario)
 }
 
-// //EstaLogueado devuelve un bool que dice si el usuario esta logueado en el sitio
-// func (tm *TweetManager) EstaLogueado(user *domain.Usuario) bool {
-// 	isLogued := false
-// 	if !tm.EstaRegistrado(user) {
-// 		isLogued = false
-// 	}
-// 	for _, userTmp := range tm.usuariosLogueados {
-// 		if user.GetID() == userTmp.GetID() {
-// 			isLogued = true
-// 		}
-// 	}
-// 	return isLogued
-// }
+//EstaLogueado devuelve un bool que dice si el usuario esta logueado en el sitio
+func (tm *TweetManager) EstaLogueado(user *domain.Usuario) bool {
+	isLogued := false
+	if !tm.EstaRegistrado(user) {
+		isLogued = false
+	}
+	for _, userTmp := range tm.usuariosLogueados {
+		if user.GetID() == userTmp.GetID() {
+			isLogued = true
+		}
+	}
+	return isLogued
+}
 
-// //LogIn en usuario que ya esta registrado en el sitio se loguea
-// func (tm *TweetManager) LogIn(user *domain.Usuario) {
-// 	if tm.EstaLogueado(user) {
-// 		return
-// 	}
-// 	tm.usuariosLogueados = append(tm.usuariosLogueados, user)
-// }
+//LogIn en usuario que ya esta registrado en el sitio se loguea
+func (tm *TweetManager) LogIn(user *domain.Usuario) {
+	if tm.EstaLogueado(user) {
+		return
+	}
+	tm.usuariosLogueados = append(tm.usuariosLogueados, user)
+}
 
-// //LogOut cierro la seción del usuario
-// func (tm *TweetManager) LogOut(user *domain.Usuario) {
-// 	if !tm.EstaLogueado(user) {
-// 		return
-// 	}
-// 	for indice, usr := range tm.usuariosLogueados {
-// 		if usr == user {
-// 			tm.usuariosLogueados = append(tm.usuariosLogueados[:indice], tm.usuariosLogueados[indice+1:]...)
-// 		}
-// 	}
-// }
+//LogOut cierro la seción del usuario
+func (tm *TweetManager) LogOut(user *domain.Usuario) {
+	if !tm.EstaLogueado(user) {
+		return
+	}
+	for indice, usr := range tm.usuariosLogueados {
+		if usr == user {
+			tm.usuariosLogueados = append(tm.usuariosLogueados[:indice], tm.usuariosLogueados[indice+1:]...)
+		}
+	}
+}
 
 // //RemoverTweet remueve un tweet
 // func (tm *TweetManager) RemoverTweet(idTweet int) {
@@ -110,57 +113,55 @@ func (tm *TweetManager) SignUp(unUsuario *domain.Usuario) {
 // 	return respuesta
 // }
 
-// //PublishTweet publisher
-// func (tm *TweetManager) PublishTweet(unTweet *domain.Tweet) (int, error) {
+//PublishTweet publisher
+func (tm *TweetManager) PublishTweet(unTweet domain.Tweet) (int, error) {
+	if unTweet.GetUser().GetUsername() == "" {
+		return 0, fmt.Errorf("User required")
+	}
+	if unTweet.GetText() == "" {
+		return 0, fmt.Errorf("text is required")
+	}
+	if !tm.EstaLogueado(unTweet.GetUser()) {
+		return 0, errors.New("El usuario no esta logueado")
+	}
+	// if tm.alreadyExists(unTweet) {
+	// 	return 0, errors.New("El tweet ya existe")
+	// }
+	unTweet.SetID(tm.cantTweets)
+	tm.cantTweets++
+	idUsuario := unTweet.GetUser().GetID()
+	tm.tweetsPorUsuario[idUsuario] = append(tm.tweetsPorUsuario[idUsuario], unTweet)
+	return unTweet.GetID(), nil
+}
 
-// 	if unTweet.GetUser().GetUsername() == "" {
-// 		return 0, fmt.Errorf("User required")
-// 	}
-// 	if unTweet.GetText() == "" {
-// 		return 0, fmt.Errorf("text is required")
-// 	}
-// 	if !tm.EstaLogueado(unTweet.GetUser()) {
-// 		return 0, errors.New("El usuario no esta logueado")
-// 	}
-// 	if tm.alreadyExists(unTweet) {
-// 		return 0, errors.New("El tweet ya existe")
-// 	}
-// 	unTweet.SetID(tm.cantTweets)
-// 	tm.cantTweets++
-
-// 	idUsuario := unTweet.GetUser().GetID()
-// 	tm.tweetsPorUsuario[idUsuario] = append(tm.tweetsPorUsuario[idUsuario], unTweet)
-// 	return unTweet.GetID(), nil
-// }
-
-// //GetTweets getter
-// func (tm *TweetManager) GetTweets() []*domain.Tweet {
-// 	var allTweets []*domain.Tweet
-// 	for _, tweetsDeUnUsuario := range tm.tweetsPorUsuario {
-// 		for _, tweet := range tweetsDeUnUsuario {
-// 			allTweets = append(allTweets, tweet)
-// 		}
-// 	}
-// 	return allTweets
-// }
+//GetTweets getter
+func (tm *TweetManager) GetTweets() []domain.Tweet {
+	var allTweets []domain.Tweet
+	for _, tweetsDeUnUsuario := range tm.tweetsPorUsuario {
+		for _, tweet := range tweetsDeUnUsuario {
+			allTweets = append(allTweets, tweet)
+		}
+	}
+	return allTweets
+}
 
 // //InitializeService init service
 // func InitializeService() {
 // 	return
 // }
 
-// //GetTweetByID obtiene un tweet por ID
-// func (tm *TweetManager) GetTweetByID(id int) (*domain.Tweet, error) {
+//GetTweetByID obtiene un tweet por ID
+func (tm *TweetManager) GetTweetByID(id int) (domain.Tweet, error) {
 
-// 	for _, tweetsDeUnUsuario := range tm.tweetsPorUsuario {
-// 		for _, tweet := range tweetsDeUnUsuario {
-// 			if tweet.GetID() == id {
-// 				return tweet, nil
-// 			}
-// 		}
-// 	}
-// 	return nil, errors.New("El tweet no existe")
-// }
+	for _, tweetsDeUnUsuario := range tm.tweetsPorUsuario {
+		for _, tweet := range tweetsDeUnUsuario {
+			if tweet.GetID() == id {
+				return tweet, nil
+			}
+		}
+	}
+	return nil, errors.New("El tweet no existe")
+}
 
 // //EditarTweet modifico el texto de un tweet
 // func (tm *TweetManager) EditarTweet(id int, nuevoTexto string) error {

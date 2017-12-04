@@ -222,3 +222,11 @@ func TestSeguirUsuario(t *testing.T) {
 		t.Error("Debería seguirme un user")
 	}
 }
+
+// go test -cpuprofile cpu.out -memprofile mem.out -bench .
+// go tool pprof -svg service.test cpu.out > cpu_profile.svg
+// go tool pprof -svg service.test mem.out > mem_profile.svg
+// en java se hace con visual vm, visual control
+
+//governdor init
+//govendor add +external

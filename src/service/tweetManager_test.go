@@ -227,13 +227,13 @@ func TestTimeline(t *testing.T) {
 	tm.SeguirUsuario(&user, &user1)
 
 	text := "Tweet re loko"
-	tweet := domain.NewTweet(&user, text)
+	tweet := domain.NewTextTweet(user, text)
 
 	text1 := "Tweet muy loko"
-	tweet1 := domain.NewTweet(&user1, text1)
+	tweet1 := domain.NewTextTweet(user1, text1)
 
 	text2 := "Tweet realmente loko"
-	tweet2 := domain.NewTweet(&user1, text2)
+	tweet2 := domain.NewTextTweet(user1, text2)
 
 	tm.PublishTweet(tweet)
 	tm.PublishTweet(tweet1)
@@ -261,10 +261,10 @@ func TestRetweet(t *testing.T) {
 	tm.LogIn(&user1)
 
 	text := "Tweet re loko"
-	tweet := domain.NewTweet(&user, text)
+	tweet := domain.NewTextTweet(user, text)
 
 	text1 := "Tweet muy loko"
-	tweet1 := domain.NewTweet(&user1, text1)
+	tweet1 := domain.NewTextTweet(user1, text1)
 
 	tm.PublishTweet(tweet)
 	tm.PublishTweet(tweet1)
@@ -291,10 +291,10 @@ func TestFavoritos(t *testing.T) {
 	tm.LogIn(&user1)
 
 	text := "Tweet re loko"
-	tweet := domain.NewTweet(&user, text)
+	tweet := domain.NewTextTweet(user, text)
 
 	text1 := "Tweet muy loko"
-	tweet1 := domain.NewTweet(&user1, text1)
+	tweet1 := domain.NewTextTweet(user1, text1)
 
 	tm.PublishTweet(tweet)
 	tm.PublishTweet(tweet1)
@@ -321,10 +321,10 @@ func TestDameFavoritosDeUser(t *testing.T) {
 	tm.LogIn(&user1)
 
 	text := "Tweet re loko"
-	tweet := domain.NewTweet(&user, text)
+	tweet := domain.NewTextTweet(user, text)
 
 	text1 := "Tweet muy loko"
-	tweet1 := domain.NewTweet(&user1, text1)
+	tweet1 := domain.NewTextTweet(user1, text1)
 
 	tm.PublishTweet(tweet)
 	tm.PublishTweet(tweet1)

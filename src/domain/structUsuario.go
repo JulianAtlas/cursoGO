@@ -57,8 +57,8 @@ func (us *Usuario) AddSeguidor(user *Usuario) {
 }
 
 //AddFavoritos agrego un tweet a los favoritos del user
-func (us *Usuario) AddFavoritos(tw *Tweet) {
-	us.favoritos = append(us.favoritos, tw)
+func (us *Usuario) AddFavoritos(tw Tweet) {
+	us.favoritos = append(us.favoritos, &tw)
 }
 
 //SetID setter id

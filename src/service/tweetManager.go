@@ -21,7 +21,7 @@ func (tm *TweetManager) GetTweetsPorUsuario() map[int][]domain.Tweet {
 }
 
 //GetTweetsFromUser me devuelve todos los tweets de un usuario
-func (tm *TweetManager) GetTweetsFromUser(user *domain.Usuario) []*domain.Tweet {
+func (tm *TweetManager) GetTweetsFromUser(user *domain.Usuario) []domain.Tweet {
 	return tm.tweetsPorUsuario[user.GetID()]
 }
 
@@ -191,8 +191,8 @@ func (tm *TweetManager) SeguirUsuario(usuarioQueSigue *domain.Usuario, usuarioSe
 }
 
 //Timeline me devuelve todos los tweets de el user mas todos los tweets de los que el sigue
-func (tm *TweetManager) Timeline(user *domain.Usuario) ([]*domain.Tweet, error) {
-	var timeline []*domain.Tweet
+func (tm *TweetManager) Timeline(user *domain.Usuario) ([]domain.Tweet, error) {
+	var timeline []domain.Tweet
 	if !tm.EstaLogueado(user) {
 		return timeline, errors.New("El usuario no esta logueado")
 	}

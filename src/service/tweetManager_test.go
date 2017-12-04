@@ -23,6 +23,7 @@ func TestSignUp(t *testing.T) {
 		t.Error("deberia haber 1 usuario en la lista de usuarios")
 	}
 }
+
 func TestLogIn(t *testing.T) {
 	tm := service.NewTweetManager()
 	var user domain.Usuario
@@ -50,34 +51,6 @@ func TestLogOut(t *testing.T) {
 	}
 }
 
-func TestParaPoderTweetearElUsuarioDebeEstarRegistradoAntes(t *testing.T) {
-	tm := service.NewTweetManager()
-	var user domain.Usuario
-	user.SetMail("mercadolibre.com")
-	user.SetUsername("meli-team")
-
-	text := "Tweet re loko"
-	tweet := domain.NewTweet(&user, text)
-	if _, err := tm.PublishTweet(tweet); err == nil {
-		t.Error("El usuario debería estar registrado")
-	}
-}
-
-func TestParaPoderTweetearElUsuarioDebeEstarLogueadoAntes(t *testing.T) {
-	tm := service.NewTweetManager()
-	var user domain.Usuario
-	user.SetMail("mercadolibre.com")
-	user.SetUsername("meli-team")
-
-	text := "Tweet re loko"
-	tweet := domain.NewTweet(&user, text)
-	tm.SignUp(&user)
-	if _, err := tm.PublishTweet(tweet); err == nil {
-		t.Error("El usuario deberia estar logueado")
-	}
-
-}
-
 func TestCanRetriveById(t *testing.T) {
 	tm := service.NewTweetManager()
 	var id int
@@ -85,7 +58,7 @@ func TestCanRetriveById(t *testing.T) {
 	user.SetMail("mercadolibre.com")
 	user.SetUsername("meli-team")
 	text := "Tweet re loko"
-	tweet := domain.NewTweet(&user, text)
+	tweet := domain.NewTextTweet(user, text)
 	tm.SignUp(&user)
 	tm.LogIn(&user)
 	id, _ = tm.PublishTweet(tweet)
@@ -98,9 +71,9 @@ func TestCanRetriveById(t *testing.T) {
 
 func TestGetTweets(t *testing.T) {
 	tm := service.NewTweetManager()
-	var tweet1 *domain.Tweet
-	var tweet2 *domain.Tweet
-	var tweet3 *domain.Tweet
+	var tweet1 domain.Tweet
+	var tweet2 domain.Tweet
+	var tweet3 domain.Tweet
 
 	var user1 domain.Usuario
 	var user2 domain.Usuario
@@ -117,9 +90,9 @@ func TestGetTweets(t *testing.T) {
 	tm.SignUp(&user1)
 	tm.SignUp(&user2)
 
-	tweet1 = domain.NewTweet(&user1, text1)
-	tweet2 = domain.NewTweet(&user1, text2)
-	tweet3 = domain.NewTweet(&user2, text3)
+	tweet1 = domain.NewTextTweet(user1, text1)
+	tweet2 = domain.NewTextTweet(user1, text2)
+	tweet3 = domain.NewTextTweet(user2, text3)
 
 	tm.LogIn(&user1)
 	tm.LogIn(&user2)
@@ -142,7 +115,7 @@ func TestMap(t *testing.T) {
 	user.SetUsername("meli-team")
 
 	text := "Tweet re loko"
-	tweet := domain.NewTweet(&user, text)
+	tweet := domain.NewTextTweet(user, text)
 
 	tm.SignUp(&user)
 	tm.LogIn(&user)
@@ -162,7 +135,7 @@ func TestRemoverTweet(t *testing.T) {
 	user.SetUsername("meli-team")
 
 	text := "Tweet re loko"
-	tweet := domain.NewTweet(&user, text)
+	tweet := domain.NewTextTweet(user, text)
 	tm.SignUp(&user)
 	tm.LogIn(&user)
 	id, _ := tm.PublishTweet(tweet)
@@ -183,7 +156,7 @@ func TestEditarUnTweet(t *testing.T) {
 	user.SetUsername("meli-team")
 
 	text := "Tweet re loko"
-	tweet := domain.NewTweet(&user, text)
+	tweet := domain.NewTextTweet(user, text)
 	tm.SignUp(&user)
 	tm.LogIn(&user)
 	id, _ := tm.PublishTweet(tweet)
@@ -203,7 +176,7 @@ func TestNoPermitoTweetsDuplicados(t *testing.T) {
 	user.SetUsername("meli-team")
 
 	text := "Tweet re loko"
-	tweet := domain.NewTweet(&user, text)
+	tweet := domain.NewTextTweet(user, text)
 	tm.SignUp(&user)
 	tm.LogIn(&user)
 	tm.PublishTweet(tweet)

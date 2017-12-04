@@ -9,14 +9,14 @@ import (
 
 //TweetManager el master de nuestra structura
 type TweetManager struct {
-	tweetsPorUsuario    map[int][]*domain.Tweet
+	tweetsPorUsuario    map[int][]domain.Tweet
 	cantTweets          int
 	usuariosRegistrados []*domain.Usuario
 	usuariosLogueados   []*domain.Usuario
 }
 
 //GetTweetsPorUsuario getter mapa
-func (tm *TweetManager) GetTweetsPorUsuario() map[int][]*domain.Tweet {
+func (tm *TweetManager) GetTweetsPorUsuario() map[int][]domain.Tweet {
 	return tm.tweetsPorUsuario
 }
 
@@ -33,7 +33,7 @@ func (tm *TweetManager) GetUsuariosRegistrados() []*domain.Usuario {
 //NewTweetManager constructor
 func NewTweetManager() *TweetManager {
 	tm := new(TweetManager)
-	tm.tweetsPorUsuario = make(map[int][]*domain.Tweet)
+	tm.tweetsPorUsuario = make(map[int][]domain.Tweet)
 	return tm
 }
 
@@ -94,7 +94,6 @@ func (tm *TweetManager) LogOut(user *domain.Usuario) {
 //RemoverTweet remueve un tweet
 func (tm *TweetManager) RemoverTweet(idTweet int) {
 	for key, tweetsDeUnUsuario := range tm.tweetsPorUsuario {
-		//fmt.Printf("key[%s] value[%s]\n", k, v)
 		for index, tweet := range tweetsDeUnUsuario {
 			if tweet.GetID() == idTweet {
 				tm.removerTweet(index, key)
@@ -107,7 +106,7 @@ func (tm *TweetManager) removerTweet(index int, key int) {
 	tm.tweetsPorUsuario[key] = append(tm.tweetsPorUsuario[key][:index], tm.tweetsPorUsuario[key][index+1:]...)
 }
 
-func (tm *TweetManager) alreadyExists(tw *domain.Tweet) bool {
+func (tm *TweetManager) alreadyExists(tw domain.Tweet) bool {
 	allTweets := tm.GetTweets()
 	respuesta := false
 	for _, tweet := range allTweets {
@@ -119,8 +118,7 @@ func (tm *TweetManager) alreadyExists(tw *domain.Tweet) bool {
 }
 
 //PublishTweet publisher
-func (tm *TweetManager) PublishTweet(unTweet *domain.Tweet) (int, error) {
-
+func (tm *TweetManager) PublishTweet(unTweet domain.Tweet) (int, error) {
 	if unTweet.GetUser().GetUsername() == "" {
 		return 0, fmt.Errorf("User required")
 	}
@@ -135,15 +133,14 @@ func (tm *TweetManager) PublishTweet(unTweet *domain.Tweet) (int, error) {
 	}
 	unTweet.SetID(tm.cantTweets)
 	tm.cantTweets++
-
 	idUsuario := unTweet.GetUser().GetID()
 	tm.tweetsPorUsuario[idUsuario] = append(tm.tweetsPorUsuario[idUsuario], unTweet)
 	return unTweet.GetID(), nil
 }
 
 //GetTweets getter
-func (tm *TweetManager) GetTweets() []*domain.Tweet {
-	var allTweets []*domain.Tweet
+func (tm *TweetManager) GetTweets() []domain.Tweet {
+	var allTweets []domain.Tweet
 	for _, tweetsDeUnUsuario := range tm.tweetsPorUsuario {
 		for _, tweet := range tweetsDeUnUsuario {
 			allTweets = append(allTweets, tweet)
@@ -152,8 +149,13 @@ func (tm *TweetManager) GetTweets() []*domain.Tweet {
 	return allTweets
 }
 
+// //InitializeService init service
+// func InitializeService() {
+// 	return
+// }
+
 //GetTweetByID obtiene un tweet por ID
-func (tm *TweetManager) GetTweetByID(id int) (*domain.Tweet, error) {
+func (tm *TweetManager) GetTweetByID(id int) (domain.Tweet, error) {
 
 	for _, tweetsDeUnUsuario := range tm.tweetsPorUsuario {
 		for _, tweet := range tweetsDeUnUsuario {

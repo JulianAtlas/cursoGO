@@ -1,51 +1,63 @@
 package main
 
 import (
+	"github.com/cursoGO/src/domain"
+	"github.com/cursoGO/src/rest"
 	"github.com/cursoGO/src/service"
-
-	"github.com/abiosoft/ishell"
 )
 
 func main() {
+	tm := service.NewTweetManager()
+	gs := rest.NewGinServer(tm)
+	var user domain.Usuario
+	user.SetMail("mercadolibre.com")
+	user.SetUsername("meli-team")
 
-	shell := ishell.New()
-	shell.SetPrompt("Tweeter >> ")
-	shell.Print("Type 'help' to know commands\n")
+	text := "Tweet re loko"
+	tweet := domain.NewTextTweet(user, text)
+	tm.SignUp(&user)
+	tm.LogIn(&user)
+	tm.PublishTweet(tweet)
+	gs.StartGinServer()
 
-	shell.AddCmd(&ishell.Cmd{
-		Name: "publishTweet",
-		Help: "Publishes a tweet",
-		Func: func(c *ishell.Context) {
+	// shell := ishell.New()
+	// shell.SetPrompt("Tweeter >> ")
+	// shell.Print("Type 'help' to know commands\n")
 
-			defer c.ShowPrompt(true)
+	// shell.AddCmd(&ishell.Cmd{
+	// 	Name: "publishTweet",
+	// 	Help: "Publishes a tweet",
+	// 	Func: func(c *ishell.Context) {
 
-			c.Print("Write your tweet: ")
+	// 		defer c.ShowPrompt(true)
 
-			tweet := c.ReadLine()
+	// 		c.Print("Write your tweet: ")
 
-			service.PublishTweet(tweet)
+	// 		tweet := c.ReadLine()
 
-			c.Print("Tweet sent\n")
+	// 		service.PublishTweet(tweet)
 
-			return
-		},
-	})
+	// 		c.Print("Tweet sent\n")
 
-	shell.AddCmd(&ishell.Cmd{
-		Name: "showTweet",
-		Help: "Shows a tweet",
-		Func: func(c *ishell.Context) {
+	// 		return
+	// 	},
+	// })
 
-			defer c.ShowPrompt(true)
+	// shell.AddCmd(&ishell.Cmd{
+	// 	Name: "showTweet",
+	// 	Help: "Shows a tweet",
+	// 	Func: func(c *ishell.Context) {
 
-			tweet := service.GetTweet()
+	// 		defer c.ShowPrompt(true)
 
-			c.Println(tweet)
+	// 		tweet := service.GetTweet()
 
-			return
-		},
-	})
+	// 		c.Println(tweet)
 
-	shell.Run()
+	// 		return
+	// 	},
+	// })
+
+	// shell.Run()
 
 }

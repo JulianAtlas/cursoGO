@@ -51,19 +51,6 @@ func TestLogOut(t *testing.T) {
 	}
 }
 
-func TestParaPoderTweetearElUsuarioDebeEstarRegistradoAntes(t *testing.T) {
-	tm := service.NewTweetManager()
-	var user domain.Usuario
-	user.SetMail("mercadolibre.com")
-	user.SetUsername("meli-team")
-
-	text := "Tweet re loko"
-	tweet := domain.NewTextTweet(user, text)
-	if _, err := tm.PublishTweet(tweet); err == nil {
-		t.Error("El usuario debería estar registrado")
-	}
-}
-
 func TestCanRetriveById(t *testing.T) {
 	tm := service.NewTweetManager()
 	var id int
@@ -223,10 +210,128 @@ func TestSeguirUsuario(t *testing.T) {
 	}
 }
 
-// go test -cpuprofile cpu.out -memprofile mem.out -bench .
-// go tool pprof -svg service.test cpu.out > cpu_profile.svg
-// go tool pprof -svg service.test mem.out > mem_profile.svg
-// en java se hace con visual vm, visual control
+func TestTimeline(t *testing.T) {
+	tm := service.NewTweetManager()
+	var user domain.Usuario
+	user.SetMail("mercadolibre.com")
+	user.SetUsername("meli-team")
+	tm.SignUp(&user)
+	tm.LogIn(&user)
 
-//governdor init
-//govendor add +external
+	var user1 domain.Usuario
+	user1.SetMail("mercadolibre.com")
+	user1.SetUsername("meli-team")
+	tm.SignUp(&user1)
+	tm.LogIn(&user1)
+
+	tm.SeguirUsuario(&user, &user1)
+
+	text := "Tweet re loko"
+	tweet := domain.NewTextTweet(user, text)
+
+	text1 := "Tweet muy loko"
+	tweet1 := domain.NewTextTweet(user1, text1)
+
+	text2 := "Tweet realmente loko"
+	tweet2 := domain.NewTextTweet(user1, text2)
+
+	tm.PublishTweet(tweet)
+	tm.PublishTweet(tweet1)
+	tm.PublishTweet(tweet2)
+
+	timeline, _ := tm.Timeline(&user)
+
+	if len(timeline) != 3 {
+		t.Error("Deberían ser 3 tweets")
+	}
+}
+
+func TestRetweet(t *testing.T) {
+	tm := service.NewTweetManager()
+	var user domain.Usuario
+	user.SetMail("mercadolibre.com")
+	user.SetUsername("meli-team")
+	tm.SignUp(&user)
+	tm.LogIn(&user)
+
+	var user1 domain.Usuario
+	user1.SetMail("mercadolibre.com")
+	user1.SetUsername("meli-team")
+	tm.SignUp(&user1)
+	tm.LogIn(&user1)
+
+	text := "Tweet re loko"
+	tweet := domain.NewTextTweet(user, text)
+
+	text1 := "Tweet muy loko"
+	tweet1 := domain.NewTextTweet(user1, text1)
+
+	tm.PublishTweet(tweet)
+	tm.PublishTweet(tweet1)
+
+	tm.Retweet(&user, tweet1.GetID())
+
+	if len(tm.GetTweetsFromUser(&user)) != 2 {
+		t.Error("Deberian ser 2")
+	}
+}
+
+func TestFavoritos(t *testing.T) {
+	tm := service.NewTweetManager()
+	var user domain.Usuario
+	user.SetMail("mercadolibre.com")
+	user.SetUsername("meli-team")
+	tm.SignUp(&user)
+	tm.LogIn(&user)
+
+	var user1 domain.Usuario
+	user1.SetMail("mercadolibre.com")
+	user1.SetUsername("meli-team")
+	tm.SignUp(&user1)
+	tm.LogIn(&user1)
+
+	text := "Tweet re loko"
+	tweet := domain.NewTextTweet(user, text)
+
+	text1 := "Tweet muy loko"
+	tweet1 := domain.NewTextTweet(user1, text1)
+
+	tm.PublishTweet(tweet)
+	tm.PublishTweet(tweet1)
+
+	tm.AgregarAFavoritos(&user, tweet1.GetID())
+
+	if len(user.GetFavoritos()) != 1 {
+		t.Error("No agrego el tweet a favoritos")
+	}
+}
+
+func TestDameFavoritosDeUser(t *testing.T) {
+	tm := service.NewTweetManager()
+	var user domain.Usuario
+	user.SetMail("mercadolibre.com")
+	user.SetUsername("meli-team")
+	tm.SignUp(&user)
+	tm.LogIn(&user)
+
+	var user1 domain.Usuario
+	user1.SetMail("mercadolibre.com")
+	user1.SetUsername("meli-team")
+	tm.SignUp(&user1)
+	tm.LogIn(&user1)
+
+	text := "Tweet re loko"
+	tweet := domain.NewTextTweet(user, text)
+
+	text1 := "Tweet muy loko"
+	tweet1 := domain.NewTextTweet(user1, text1)
+
+	tm.PublishTweet(tweet)
+	tm.PublishTweet(tweet1)
+
+	tm.AgregarAFavoritos(&user, tweet1.GetID())
+
+	if res, _ := tm.DameFavoritos(&user); len(res) != 1 {
+		t.Error("No me agrego el favorito")
+	}
+}

@@ -4,19 +4,19 @@ import (
 	"time"
 )
 
-//Tweet struct tweet
+//TextTweet struct tweet
 type TextTweet struct {
 	text string
-	user Usuario
+	user *Usuario
 	date *Datestruct
 	id   int
 }
 
-//NewTweet un nuevo tweet
+//NewTextTweet un nuevo tweet
 func NewTextTweet(user Usuario, text string) *TextTweet {
 	myTweet := new(TextTweet)
 	myTweet.text = text
-	myTweet.user = user
+	myTweet.user = &user
 	fecha := time.Now()
 	year := fecha.Format("2006")
 	month := fecha.Format("01")
@@ -37,7 +37,7 @@ func (tw *TextTweet) GetID() int {
 
 //GetUser getter user
 func (tw *TextTweet) GetUser() *Usuario {
-	return &tw.user
+	return tw.user
 }
 
 //SetID setter id

@@ -16,21 +16,13 @@
 
 (Listo) Seguir usuario
 
+(Listo) Timeline del usuario: Debe mostrar los tweets escritos por el usuario y los escritos por los usuarios que sigue
 
-Timeline del usuario
-Debe mostrar los tweets escritos por el usuario y los escritos por los usuarios que sigue
+(Listo) Retweet: Agrega a la lista de tweets de un usuario un tweet de otro usuario
 
+(Listo) Fav: Marcar un tweet como favorito
 
-Retweet
-Agrega a la lista de tweets de un usuario un tweet de otro usuario
-
-
-Fav
-Marcar un tweet como favorito
-
-
-Listar favoritos
-Obtiene todos los tweets favoritos de un usuario
+(Listo) Listar favoritos: Obtiene todos los tweets favoritos de un usuario
 
 
 Enviar un mensaje directo

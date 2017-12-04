@@ -10,7 +10,7 @@ var Username string
 type Usuario struct {
 	id         int
 	mail       string
-	username   string
+	Username   string
 	seguidos   []*Usuario
 	seguidores []*Usuario
 	favoritos  []*Tweet
@@ -28,7 +28,7 @@ func (us *Usuario) GetMail() string {
 
 //GetUsername getter username
 func (us *Usuario) GetUsername() string {
-	return us.username
+	return us.Username
 }
 
 //GetSeguidos usuario que sigo
@@ -73,5 +73,5 @@ func (us *Usuario) SetMail(mail string) {
 
 //SetUsername setter username
 func (us *Usuario) SetUsername(username string) {
-	us.username = username
+	us.Username = username
 }

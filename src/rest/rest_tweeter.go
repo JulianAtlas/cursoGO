@@ -22,7 +22,7 @@ func (server *GinServer) StartGinServer() {
 
 	router.GET("/listTweets", server.listTweets)
 	// router.GET("/listTweets/:user", server.listTweets)
-	router.POST("publishTweet", server.publishTweet)
+	router.POST("/publishTweet", server.publishTweet)
 	// router.POST("publishImageTweet", server.publishImageTweet)
 	// router.POST("publishQuoteTweet", server.publishQuoteTweet)
 
@@ -35,16 +35,16 @@ func (server *GinServer) listTweets(c *gin.Context) {
 
 func (server *GinServer) publishTweet(c *gin.Context) {
 
-	var tweet domain.TextTweet
-	c.Bind(&tweet)
+	var tweetData domain.TextTweet
+	c.Bind(&tweetData)
 
-	tweetToPublish := domain.NewTextTweet(tweetdata.User, tweetdata.Text)
+	tweet := domain.NewTextTweet(*tweetData.User, tweetData.Text)
 
-	id, err := server.tweetManager.PublishTweet(tweetToPublish, quit)
+	id, err := server.tweetmanager.PublishTweet(tweet)
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, "Error publishing tweet "+err.Error())
+		c.JSON(http.StatusInternalServerError, "Error: "+err.Error())
 	} else {
-		c.JSON(http.StatusOK, struct{ Id int }{id})
+		c.JSON(http.StatusOK, struct{ ID int }{id})
 	}
 }
